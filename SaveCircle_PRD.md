@@ -2,8 +2,8 @@
 
 **Tagline:** Secure, Transparent & Intelligent Community Savings Management
 **Hackathon:** Omnikon 2026 · Problem ID: `Omni_FinTech_9` — Digitizing Community Savings Groups Securely
-**Document status:** Draft for Round 1 · Team Name: *[TO BE FILLED]* · College/University: *[TO BE FILLED]*
-**Owner:** *[TO BE FILLED]*
+**Document status:** Working MVP for Round 1 · College/University: Graphic Era (Deemed to be University)
+**Project lead:** Priyanka Rawat
 
 ---
 
@@ -129,9 +129,9 @@ AI risk engine flags unusual transaction patterns for review
 ```
 Users (Admins & Members)
    ↓
-Frontend — HTML / CSS / JavaScript
+Frontend — React / TypeScript / Vite
    ↓
-Backend API — Python / Flask
+Backend API — Python / FastAPI
    ↓
 Authentication & Authorization
    ↓
@@ -158,15 +158,15 @@ The AI Risk Detection Engine sits alongside the core system: it reads transactio
 
 ## 8. Proposed Tech Stack
 
-*(Proposed for Round 1 — not yet fully implemented; working code is not mandatory at this stage.)*
+*(Implemented MVP stack for Round 1; deployment and production hardening remain in progress.)*
 
 | Layer | Proposed Technologies |
 |---|---|
-| Frontend | HTML, CSS, JavaScript |
-| Backend | Python, Flask |
+| Frontend | React, TypeScript, Vite, CSS |
+| Backend | Python, FastAPI, SQLAlchemy |
 | Database | SQLite (MVP) → PostgreSQL (production / scaling) |
 | Machine Learning | Python, Pandas, NumPy, Scikit-learn |
-| Visualization | Chart.js or Plotly |
+| Visualization | Recharts |
 | Security | Password hashing, authentication, role-based access control, audit logging |
 | Version Control | Git + GitHub |
 | Deployment | Render / Railway / Vercel (target to be finalized based on final architecture) |
@@ -194,7 +194,7 @@ The AI Risk Detection Engine sits alongside the core system: it reads transactio
 
 ## 11. Success Metrics (indicative, for future phases)
 
-Since Round 1 does not require a working product, these are intended outcomes to validate once the MVP is built, not current claims:
+These are intended outcomes for validation and later pilot evaluation; they are not current impact claims:
 
 - Reduction in time administrators spend on manual reconciliation.
 - Proportion of contributions verified digitally without dispute.
@@ -213,7 +213,7 @@ Since Round 1 does not require a working product, these are intended outcomes to
 | **4 — AI/ML** | Team enhancement | Dataset preparation, feature engineering, anomaly detection, risk scoring, explainable alerts |
 | **5 — Testing & Deployment** | Hardening | Security testing, functional testing, model evaluation, deployment, documentation |
 
-This is a planning roadmap for subsequent rounds, not a claim that any phase is already complete.
+Phases 1–4 have an MVP implementation. Testing, deployment, model evaluation and production hardening remain active work.
 
 ---
 
@@ -238,9 +238,9 @@ This is a planning roadmap for subsequent rounds, not a claim that any phase is 
 
 ## 15. Reviewer Notes
 
-- This project is proposed as a secure digital platform for community savings groups, directly addressing Omni_FinTech_9.
+- This project is implemented as an MVP secure digital platform for community savings groups, directly addressing Omni_FinTech_9.
 - AI-based anomaly detection is an enhancement to the core digitization solution, not part of the official problem statement.
 - The AI system is intended to support human review rather than automatically label users as fraudulent.
-- The initial version can use a controlled, anonymized, or synthetic dataset for development and testing.
+- The current MVP uses a controlled synthetic dataset for development and testing.
 - The architecture is designed to be scalable toward real-world deployment.
 - The project focuses on transparency, security, traceability, and responsible use of AI.
