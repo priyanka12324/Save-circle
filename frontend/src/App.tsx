@@ -1,9 +1,10 @@
 import { FormEvent, useEffect, useState } from 'react'
 import {
   AlertCircle, AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, Eye, EyeOff,
-  FileCheck2, Landmark, LoaderCircle, LogOut, ReceiptText, ShieldCheck, UserPlus, Users,
+  FileCheck2, Landmark, LoaderCircle, ReceiptText, ShieldCheck, UserPlus, Users,
 } from 'lucide-react'
 import './App.css'
+import Workspace from './Workspace'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const TOKEN_KEY = 'savecircle_access_token'
@@ -106,7 +107,7 @@ function App() {
   }
 
   if (user) {
-    return <AuthenticatedDashboard user={user} apiOnline={apiOnline} onLogout={logout} />
+    return <Workspace user={user} apiOnline={apiOnline} onLogout={logout} />
   }
 
   return (
@@ -253,38 +254,6 @@ function AuthDialog({ mode, apiOnline, onModeChange, onClose, onAuthenticated }:
           <button className="submit-button" disabled={submitting}>{submitting ? <><LoaderCircle className="spin" size={18} /> Please wait…</> : mode === 'login' ? 'Log in securely' : 'Create member account'}</button>
           <p className="auth-switch">{mode === 'login' ? "Don't have an account?" : 'Already registered?'} <button type="button" onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}>{mode === 'login' ? 'Create one' : 'Log in'}</button></p>
         </form>
-      </div>
-    </div>
-  )
-}
-
-function AuthenticatedDashboard({ user, apiOnline, onLogout }: { user: User; apiOnline: boolean | null; onLogout: () => void }) {
-  const isAdmin = user.role.toUpperCase() === 'ADMIN'
-  return (
-    <div className="app-dashboard">
-      <header className="dashboard-nav">
-        <div className="brand"><span className="brand-mark">S</span><span>SaveCircle</span></div>
-        <div className="user-menu"><span className={`role-pill ${isAdmin ? 'admin' : ''}`}>{user.role}</span><div><b>{user.full_name}</b><small>{user.email}</small></div><button onClick={onLogout}><LogOut size={18} /> Logout</button></div>
-      </header>
-      <div className="dashboard-layout">
-        <aside>
-          <span className="aside-label">Workspace</span>
-          <button className="active"><Landmark size={18} /> Overview</button>
-          <button><Users size={18} /> {isAdmin ? 'Members' : 'My groups'}</button>
-          <button><ReceiptText size={18} /> Contributions</button>
-          <button><AlertTriangle size={18} /> Risk alerts</button>
-        </aside>
-        <section className="dashboard-content">
-          <div className="welcome-row"><div><span>{isAdmin ? 'Administrator workspace' : 'Member workspace'}</span><h1>Welcome, {user.full_name.split(' ')[0]}.</h1><p>{isAdmin ? 'Review community activity and keep every record accountable.' : 'Your savings records and receipts are ready in one secure place.'}</p></div><span className={`status ${apiOnline ? 'online' : ''}`}><i /> {apiOnline ? 'API online' : 'API unavailable'}</span></div>
-          <div className="dashboard-metrics">
-            {(isAdmin ? metrics : metrics.slice(0, 3)).map(({ label, value, icon: Icon }) => <article key={label}><span><Icon size={21} /></span><div><small>{label}</small><strong>{value}</strong></div></article>)}
-          </div>
-          <div className="dashboard-panels">
-            <article><div className="panel-title"><div><span>Community health</span><h3>Dehradun Community Savings</h3></div><CheckCircle2 size={24} /></div><div className="balance compact"><span>Total verified savings</span><strong>₹2,48,000</strong><small>Cycle 4 of 12</small></div></article>
-            <article><div className="panel-title"><div><span>Recent activity</span><h3>Latest records</h3></div></div><div className="activity"><div><span className="activity-icon good"><ReceiptText size={19} /></span><p><b>Contribution verified</b><small>₹2,000 · Today</small></p></div><div><span className="activity-icon warn"><AlertTriangle size={19} /></span><p><b>Review requested</b><small>Explanation available</small></p></div></div></article>
-          </div>
-          <div className="dashboard-notice"><ShieldCheck size={22} /><div><b>Authentication is working</b><p>Your JWT session was verified by the FastAPI backend. The next module will connect group and contribution records to these dashboard panels.</p></div></div>
-        </section>
       </div>
     </div>
   )
