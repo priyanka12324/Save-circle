@@ -1,34 +1,33 @@
-import os
-from typing import List
-from pydantic_settings import BaseSettings
+import json
+from pydantic import field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
     APP_NAME: str = "SaveCircle FinTech API"
     APP_VERSION: str = "1.0.0"
     APP_ENV: str = "development"
-    
-    # Database configuration (SQLite local fallback, PostgreSQL production ready)
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./savecircle.db")
-    
-    # JWT & Auth
-    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "savecircle_dev_secret_omnikon_hackathon_2026_secure_key")
+
+    DATABASE_URL: str = "sqlite:///./savecircle.db"
+    JWT_SECRET_KEY: str
     JWT_ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
-    
-    # CORS
-    CORS_ORIGINS: List[str] = [
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "http://127.0.0.1:5173",
-        "http://127.0.0.1:3000",
-        "*"
-    ]
-    
-    # AI Engine Sensitivity
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24
+    FRONTEND_URL: str = "http://localhost:5173"
+    CORS_ORIGINS: list[str] = []
     AI_CONTAMINATION_RATE: float = 0.15
 
-    class Config:
-        env_file = ".env"
-        extra = "allow"
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
+    @field_validator("CORS_ORIGINS", mode="before")
+    @classmethod
+    def parse_origins(cls, value):
+        if isinstance(value, str):
+            return json.loads(value)
+        return value
+
+    @property
+    def allowed_origins(self) -> list[str]:
+        return list(dict.fromkeys([self.FRONTEND_URL, *self.CORS_ORIGINS]))
+
 
 settings = Settings()
