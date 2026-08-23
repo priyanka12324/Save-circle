@@ -1,4 +1,5 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import type { FormEvent } from 'react'
 import {
   AlertCircle, AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, Eye, EyeOff,
   FileCheck2, Landmark, LoaderCircle, ReceiptText, ShieldCheck, UserPlus, Users,
