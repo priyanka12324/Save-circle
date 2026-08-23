@@ -3,6 +3,7 @@ import {
   AlertTriangle, CheckCircle2, FileText, Landmark, LayoutDashboard, LoaderCircle,
   LogOut, ReceiptText, RefreshCw, ShieldCheck, Users, WalletCards,
 } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import './Workspace.css'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
@@ -154,7 +155,7 @@ function Empty({ text }: { text: string }) {
 
 function Overview({ data, isAdmin }: { data: DashboardData; isAdmin: boolean }) {
   const metrics = data.metrics || {}
-  const cards = isAdmin
+  const cards: Array<[string, unknown, LucideIcon]> = isAdmin
     ? [['Members', metrics.total_members, Users], ['Active groups', metrics.active_groups, Landmark], ['Verified savings', metrics.total_contributions, WalletCards], ['Pending reviews', metrics.pending_verifications, AlertTriangle]]
     : [['Total savings', metrics.total_savings, WalletCards], ['Monthly contribution', metrics.current_contribution, ReceiptText], ['Active groups', metrics.active_groups, Landmark], ['Receipts', metrics.verified_receipts_count, FileText]]
   const recent = (isAdmin ? data.recent_transactions : data.recent_contributions) || []
