@@ -102,6 +102,11 @@ The MVP uses synthetic, fictional demonstration data. Risk results are decision-
 - Round 1 presentation: [SaveCircle_Omnikon_Round1.pptx](./SaveCircle_Omnikon_Round1.pptx)
 - Product requirements: [SaveCircle_PRD.md](./SaveCircle_PRD.md)
 
+
+### Demo Login
+
+- **Email:** `admin@savecircle.demo`
+- **Password:** `Admin@123`
 ## License
 
 Licensed under the [MIT License](./LICENSE).
