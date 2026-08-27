@@ -97,7 +97,7 @@ The MVP uses synthetic, fictional demonstration data. Risk results are decision-
 
 ## Links
 
-- Live demo: [Save_Circle _link](https://save-circle-5grm.vercel.app/).
+- Live demo: [Save_Circle _link](https://save-circle-a26t.vercel.app/).
 - Demo video: _Add after recording_
 - Round 1 presentation: [SaveCircle_Omnikon_Round1.pptx](./SaveCircle_Omnikon_Round1.pptx)
 - Product requirements: [SaveCircle_PRD.md](./SaveCircle_PRD.md)
