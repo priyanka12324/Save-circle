@@ -10,6 +10,10 @@ class GroupCreate(BaseModel):
     max_members: int = Field(20, ge=2, le=500)
     total_cycles: int = Field(12, ge=1, le=100)
     start_date: Optional[datetime] = None
+    normal_interest_rate: float = Field(1.0, ge=0, le=100)
+    overdue_interest_rate: float = Field(2.0, ge=0, le=100)
+    repayment_period_months: int = Field(6, ge=1, le=120)
+    bank_interest_rate: float = Field(0.0, ge=0, le=100)
 
 class GroupUpdate(BaseModel):
     name: Optional[str] = None
@@ -65,6 +69,10 @@ class GroupOut(BaseModel):
     is_creator: bool = False
     can_manage: bool = False
     is_member: bool = False
+    normal_interest_rate: float = 1.0
+    overdue_interest_rate: float = 2.0
+    repayment_period_months: int = 6
+    bank_interest_rate: float = 0.0
 
     class Config:
         from_attributes = True
