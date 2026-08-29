@@ -229,6 +229,8 @@ SaveCircle uses synthetic/fictional demonstration data for evaluation. AI risk r
 - **API Documentation:** https://save-circle.onrender.com/docs
 - **Project Presentation:** [SaveCircle Omnikon Presentation](./SaveCircle_Omnikon_Round1.pptx)
 - **Product Requirements:** [SaveCircle_PRD.md](./SaveCircle_PRD.md)
+- **PPT** [app explaination](https://docs.google.com/presentation/d/1IzEOrX2IAbYq-CUC4qu9hwxTh6PhJVS8/edit?usp=sharing&ouid=117767666886122076028&rtpof=true&sd=true
+  )
 
 ## License
 
