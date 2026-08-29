@@ -7,7 +7,9 @@ import {
 import './App.css'
 import Workspace from './Workspace'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const LOCAL_API_URL = 'http://localhost:8000'
+const PRODUCTION_API_URL = 'https://save-circle.onrender.com'
+const API_URL = (import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? LOCAL_API_URL : PRODUCTION_API_URL)).replace(/\/$/, '')
 const TOKEN_KEY = 'savecircle_access_token'
 const USER_KEY = 'savecircle_user'
 
@@ -195,10 +197,6 @@ function AuthDialog({ mode, apiOnline, onModeChange, onClose, onAuthenticated }:
   const submit = async (event: FormEvent) => {
     event.preventDefault()
     setError('')
-    if (apiOnline === false) {
-      setError('Backend is offline. Start FastAPI on port 8000 and try again.')
-      return
-    }
     if (mode === 'register' && form.password !== form.confirm_password) {
       setError('Passwords do not match.')
       return
@@ -219,7 +217,11 @@ function AuthDialog({ mode, apiOnline, onModeChange, onClose, onAuthenticated }:
       if (!response.ok) throw new Error(typeof data.detail === 'string' ? data.detail : 'Unable to authenticate.')
       onAuthenticated(data as AuthResponse)
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : 'Something went wrong.')
+      if (requestError instanceof TypeError || apiOnline === false) {
+        setError(`Unable to reach the SaveCircle API at ${API_URL}. The Render service may be waking up; wait a few seconds and try again.`)
+      } else {
+        setError(requestError instanceof Error ? requestError.message : 'Something went wrong.')
+      }
     } finally {
       setSubmitting(false)
     }
