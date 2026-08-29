@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.database import get_db
 from app.models.group import SavingsGroup, GroupMember, SavingsCycle
+from app.models.finance import CommitteeSettings
 from app.models.transaction import Contribution
 from app.models.user import User
 from app.schemas.group import GroupCreate, GroupUpdate, GroupOut, GroupMemberAdd, GroupMemberOut, SavingsCycleOut
@@ -21,9 +22,15 @@ def group_out(db: Session, group: SavingsGroup, user: User) -> GroupOut:
     out.member_count = db.query(GroupMember).filter(GroupMember.group_id == group.id, GroupMember.is_active == True).count()
     out.total_collected = float(db.query(func.sum(Contribution.amount)).filter(Contribution.group_id == group.id, Contribution.status == "VERIFIED").scalar() or 0.0)
     membership = db.query(GroupMember).filter(GroupMember.group_id == group.id, GroupMember.user_id == user.id, GroupMember.is_active == True).first()
+    rules = db.query(CommitteeSettings).filter(CommitteeSettings.group_id == group.id).first()
     out.is_creator = group.created_by_id == user.id
     out.can_manage = can_manage_group(user, group)
     out.is_member = membership is not None
+    if rules:
+        out.normal_interest_rate = rules.normal_interest_rate
+        out.overdue_interest_rate = rules.overdue_interest_rate
+        out.repayment_period_months = rules.repayment_period_months
+        out.bank_interest_rate = rules.bank_interest_rate
     return out
 
 @router.get("", response_model=List[GroupOut])
@@ -39,8 +46,9 @@ def create_group(group_in: GroupCreate, request: Request, current_user: User = D
     db.add(new_group); db.commit(); db.refresh(new_group)
     creator_membership = GroupMember(group_id=new_group.id, user_id=current_user.id, role_in_group="CREATOR", is_active=True)
     cycle = SavingsCycle(group_id=new_group.id, cycle_number=1, target_amount=group_in.contribution_amount * group_in.max_members, collected_amount=0.0, status="ACTIVE", start_date=new_group.start_date)
-    db.add_all([creator_membership, cycle]); db.commit()
-    log_audit(db=db, actor=current_user, action="CREATE_GROUP", entity_type="GROUP", entity_id=new_group.id, description=f"{current_user.full_name} created savings group '{new_group.name}' and became its Group Creator.", new_state={"name":new_group.name,"amount":new_group.contribution_amount,"cycles":new_group.total_cycles,"creator_id":current_user.id}, ip_address=request.client.host if request.client else "127.0.0.1")
+    rules = CommitteeSettings(group_id=new_group.id, normal_interest_rate=group_in.normal_interest_rate, overdue_interest_rate=group_in.overdue_interest_rate, repayment_period_months=group_in.repayment_period_months, bank_interest_rate=group_in.bank_interest_rate)
+    db.add_all([creator_membership, cycle, rules]); db.commit()
+    log_audit(db=db, actor=current_user, action="CREATE_GROUP", entity_type="GROUP", entity_id=new_group.id, description=f"{current_user.full_name} created savings group '{new_group.name}' and became its Group Creator.", new_state={"name":new_group.name,"amount":new_group.contribution_amount,"cycles":new_group.total_cycles,"creator_id":current_user.id,"normal_interest_rate":group_in.normal_interest_rate,"overdue_interest_rate":group_in.overdue_interest_rate,"repayment_period_months":group_in.repayment_period_months,"bank_interest_rate":group_in.bank_interest_rate}, ip_address=request.client.host if request.client else "127.0.0.1")
     return group_out(db, new_group, current_user)
 
 @router.get("/{group_id}", response_model=GroupOut)
