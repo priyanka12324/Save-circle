@@ -24,10 +24,12 @@ from app.utils.seed_data import seed_database
 
 
 def ensure_live_demo_group():
-    """Create a minimal demo savings group when a production SQLite database is empty.
+    """Create a minimal demo savings group whenever the current database has no groups.
 
-    Local and Render SQLite databases are separate. This keeps the deployed demo usable
-    after a fresh/ephemeral Render database starts, without overwriting any real groups.
+    Local and Render SQLite databases are separate. Render can also restart with an
+    existing user table but an empty groups table, so this check intentionally runs
+    after normal startup/seed logic in every environment. Existing groups are never
+    modified or replaced.
     """
     db = SessionLocal()
     try:
@@ -38,6 +40,7 @@ def ensure_live_demo_group():
         member = db.query(User).filter(User.email == "member@savecircle.demo").first()
         owner = member or admin
         if not owner:
+            print("[!] No demo user available; skipping live demo group creation.")
             return
 
         group = SavingsGroup(
@@ -77,7 +80,7 @@ def ensure_live_demo_group():
             bank_interest_rate=0.0,
         ))
         db.commit()
-        print("[+] Created minimal live demo savings group for empty production database.")
+        print("[+] Created minimal live demo savings group for empty database.")
     finally:
         db.close()
 
@@ -87,8 +90,10 @@ async def lifespan(_: FastAPI):
     Base.metadata.create_all(bind=engine)
     if settings.APP_ENV == "development":
         seed_database()
-    else:
-        ensure_live_demo_group()
+
+    # Always run this safety check. seed_database() can legitimately return early
+    # when demo users already exist while the groups table is still empty.
+    ensure_live_demo_group()
     yield
 
 
