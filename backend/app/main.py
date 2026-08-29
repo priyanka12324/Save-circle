@@ -15,6 +15,7 @@ from app.routes.ai import router as ai_router
 from app.routes.audit import router as audit_router
 from app.routes.analytics import router as analytics_router
 from app.routes.committee import router as committee_router
+from app.routes.advances import router as advances_router
 from app.utils.seed_data import seed_database
 
 
@@ -51,6 +52,7 @@ app.include_router(ai_router)
 app.include_router(audit_router)
 app.include_router(analytics_router)
 app.include_router(committee_router)
+app.include_router(advances_router)
 
 
 @app.get("/")
