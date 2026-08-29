@@ -1,6 +1,5 @@
 import datetime
 import uuid
-from dateutil.relativedelta import relativedelta
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
@@ -148,8 +147,8 @@ def decide_advance(advance_id: int, payload: AdvanceDecision, current_user: User
         now = datetime.datetime.utcnow()
         advance.approved_at = now
         advance.approved_by_id = current_user.id
-        advance.due_date = now + relativedelta(months=int(settings.repayment_period_months))
-        tx = Transaction(
+        advance.due_date = now + datetime.timedelta(days=30 * int(settings.repayment_period_months))
+        db.add(Transaction(
             reference_id=f"ADV-{uuid.uuid4().hex[:12].upper()}",
             member_id=advance.member_id,
             group_id=group.id,
@@ -157,8 +156,7 @@ def decide_advance(advance_id: int, payload: AdvanceDecision, current_user: User
             type="ADVANCE",
             status="COMPLETED",
             description=f"Cycle {advance.cycle_number} | Approved advance request #{advance.id}",
-        )
-        db.add(tx)
+        ))
     db.commit()
     db.refresh(advance)
     return _serialize(db, advance, current_user)
