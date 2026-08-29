@@ -4,7 +4,9 @@ import { Landmark, LoaderCircle, RefreshCw, WalletCards } from 'lucide-react'
 type JsonRecord = Record<string, unknown>
 type LedgerResponse = { group: JsonRecord; rows: JsonRecord[]; summary: JsonRecord; member_summary: JsonRecord; calculation_note: string }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const LOCAL_API_URL = 'http://localhost:8000'
+const PRODUCTION_API_URL = 'https://save-circle.onrender.com'
+const API_URL = (import.meta.env.VITE_API_URL || (['localhost', '127.0.0.1'].includes(window.location.hostname) ? LOCAL_API_URL : PRODUCTION_API_URL)).replace(/\/$/, '')
 const TOKEN_KEY = 'savecircle_access_token'
 const money = (value: unknown) => `₹${Number(value || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`
 
