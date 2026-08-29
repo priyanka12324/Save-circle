@@ -58,9 +58,13 @@ class GroupOut(BaseModel):
     start_date: datetime
     end_date: Optional[datetime] = None
     is_active: bool
+    created_by_id: Optional[int] = None
     created_at: datetime
     member_count: Optional[int] = 0
     total_collected: Optional[float] = 0.0
+    is_creator: bool = False
+    can_manage: bool = False
+    is_member: bool = False
 
     class Config:
         from_attributes = True
