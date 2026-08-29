@@ -2,7 +2,6 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel, Field
 
-
 class ContributionCreate(BaseModel):
     group_id: int
     amount: float = Field(..., gt=0, description="Amount in INR")
@@ -13,11 +12,9 @@ class ContributionCreate(BaseModel):
     proof_content_type: Optional[str] = None
     proof_data_url: Optional[str] = None
 
-
 class ContributionVerify(BaseModel):
     status: str = Field(..., description="VERIFIED or REJECTED")
     notes: Optional[str] = None
-
 
 class ContributionOut(BaseModel):
     id: int
@@ -36,10 +33,10 @@ class ContributionOut(BaseModel):
     receipt_id: Optional[int] = None
     payment_proof_url: Optional[str] = None
     payment_proof_filename: Optional[str] = None
+    can_verify: bool = False
 
     class Config:
         from_attributes = True
-
 
 class TransactionCreate(BaseModel):
     member_id: int
@@ -47,7 +44,6 @@ class TransactionCreate(BaseModel):
     amount: float = Field(..., gt=0)
     type: str = Field("CONTRIBUTION", description="CONTRIBUTION, WITHDRAWAL, REFUND, ADJUSTMENT")
     description: Optional[str] = None
-
 
 class TransactionOut(BaseModel):
     id: int
@@ -65,7 +61,6 @@ class TransactionOut(BaseModel):
 
     class Config:
         from_attributes = True
-
 
 class DigitalReceiptOut(BaseModel):
     id: int
