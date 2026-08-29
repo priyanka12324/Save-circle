@@ -21,7 +21,9 @@ router = APIRouter(prefix="/api/contributions", tags=["Contributions"])
 def to_output(db: Session, contribution: Contribution, viewer: User) -> ContributionOut:
     out=ContributionOut.model_validate(contribution)
     member=db.query(User).filter(User.id==contribution.member_id).first();group=db.query(SavingsGroup).filter(SavingsGroup.id==contribution.group_id).first();receipt=db.query(DigitalReceipt).filter(DigitalReceipt.contribution_id==contribution.id).first();proof=db.query(PaymentProof).filter(PaymentProof.contribution_id==contribution.id).first()
-    out.member_name=member.full_name if member else f"Member #{contribution.member_id}";out.group_name=group.name if group else f"Group #{contribution.group_id}";out.receipt_id=receipt.id if receipt else None;out.payment_proof_url=proof.data_url if proof else None;out.payment_proof_filename=proof.filename if proof else None;out.can_verify=bool(group and (viewer.role=="ADMIN" or group.created_by_id==viewer.id));return out
+    out.member_name=member.full_name if member else f"Member #{contribution.member_id}";out.group_name=group.name if group else f"Group #{contribution.group_id}";out.receipt_id=receipt.id if receipt else None;out.payment_proof_url=proof.data_url if proof else None;out.payment_proof_filename=proof.filename if proof else None
+    out.can_verify=bool(group and (viewer.role=="ADMIN" or (group.created_by_id==viewer.id and contribution.member_id!=viewer.id)))
+    return out
 
 @router.get("",response_model=List[ContributionOut])
 def list_contributions(group_id:Optional[int]=None,status_filter:Optional[str]=None,current_user:User=Depends(get_current_user),db:Session=Depends(get_db)):
